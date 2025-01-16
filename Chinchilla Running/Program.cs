@@ -13,7 +13,7 @@ namespace Chinchilla_Running
             ApplicationConfiguration.Initialize();
 
             // 隱藏主窗口並啟動系統托盤圖標
-            Application.Run(new ApplicationContext());
+            Application.Run(new Form1());
         }
     }
 }

@@ -11,14 +11,7 @@
         ///  Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
+
 
         #region Windows Form Designer generated code
 
@@ -28,44 +21,28 @@
         /// </summary>
         private void InitializeComponent()
         {
+            // 創建容器，這是為了管理和釋放組件所需的資源
             components = new System.ComponentModel.Container();
-            notifyIcon1 = new NotifyIcon(components);
-            SuspendLayout();
-            // 
-            // notifyIcon1
-            // 
-            notifyIcon1.Text = "notifyIcon1";
-            notifyIcon1.Visible = true;
-            notifyIcon1.MouseDoubleClick += notifyIcon1_MouseDoubleClick; // 綁定雙擊事件
-            // 
-            // Form1
-            // 
+
+            // 設置自動縮放的基準尺寸，這將根據此尺寸來調整界面的大小
             AutoScaleDimensions = new SizeF(7F, 15F);
+
+            // 設置縮放模式為字體模式，這樣控件的大小會根據字體大小來調整
             AutoScaleMode = AutoScaleMode.Font;
+
+            // 設置主視窗的尺寸
             ClientSize = new Size(800, 438);
+
+            // 設置窗體的名稱，用於標識窗體
             Name = "Form1";
-            Text = "Form1";
-            Load += Form1_Load; // 綁定加載事件
+
+            // 設置窗體的標題，顯示在視窗的標題欄中
+            Text = "絨鼠跑步器";
+
+            // 讓控件繼續佈局，這通常在設置控件後調用，確保界面更新
             ResumeLayout(false);
         }
 
         #endregion
-
-        private NotifyIcon notifyIcon1;
-
-        // Form1 加載事件處理
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            // 在此進行初始化設定
-            // 例如設定托盤圖標、計時器等
-        }
-
-        // notifyIcon1 雙擊事件處理
-        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            // 處理鼠標雙擊事件
-            // 比如顯示一個訊息框
-            MessageBox.Show("雙擊了系統托盤圖標!");
-        }
     }
 }
