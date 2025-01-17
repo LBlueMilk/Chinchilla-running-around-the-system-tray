@@ -124,7 +124,7 @@ namespace Chinchilla_Running
         {
             string basePath = AppDomain.CurrentDomain.BaseDirectory;
             hamsterIcons = new Icon[76];
-            string defaultIconPath = Path.Combine(basePath, "Image", "48x48", "ico_pack_48x48_1.ico");
+            string defaultIconPath = Path.Combine(basePath, "Image", "16x16", "ico_pack_16x16_chinchilla (1).ico");
 
             // 如果找不到預設圖示，拋出異常
             if (!File.Exists(defaultIconPath))
@@ -135,7 +135,7 @@ namespace Chinchilla_Running
             // 加載每一幀圖示
             for (int i = 0; i < 76; i++)
             {
-                string iconPath = Path.Combine(basePath, "Image", "48x48", $"ico_pack_48x48_{i + 1}.ico");
+                string iconPath = Path.Combine(basePath, "Image", "16x16", $"ico_pack_16x16_chinchilla ({i + 1}).ico");
                 try
                 {
                     hamsterIcons[i] = File.Exists(iconPath) ? new Icon(iconPath) : new Icon(defaultIconPath);
