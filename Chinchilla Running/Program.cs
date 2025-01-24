@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Timers;
 using System.Windows.Forms;
 using Microsoft.VisualBasic.Devices;  // 引用 Microsoft.VisualBasic 命名空間，用於獲取系統性能信息(記憶體)
@@ -11,29 +12,22 @@ namespace Chinchilla_Running
     internal static class Program
     {
         private static NotifyIcon notifyIcon;  // 用於顯示系統托盤圖示
-        private static PerformanceCounter cpuCounter;  // 用來監控 CPU 使用率
-        private static PerformanceCounter memoryCounter;  // 用來監控記憶體使用率
-        private static float cpuUsage;  // 當前的 CPU 使用率
-        private static float memoryUsage;  // 當前的記憶體使用率
+        private static PerformanceCounter cpuCounter, memoryCounter;  // 用來監控 CPU 和記憶體使用率
+        private static float cpuUsage, memoryUsage;  // 當前的 CPU 和記憶體使用率
         private static System.Timers.Timer animationTimer;  // 用於控制動畫更新的定時器
         private static int currentFrame = 0;  // 當前的動畫幀
         private static Icon[] hamsterIcons;  // 存放絨鼠動畫幀的圖示數組
         private static volatile bool isDisposed = false;  // 記錄是否已被釋放
 
         // 用於控制通知頻率
-        private static DateTime lastCpuNotification = DateTime.MinValue;
-        private static DateTime lastMemoryNotification = DateTime.MinValue;
-        private static DateTime lastCombinedNotification = DateTime.MinValue;
+        private static DateTime lastCpuNotification, lastMemoryNotification, lastCombinedNotification = DateTime.MinValue;
         private static readonly TimeSpan NotificationCooldown = TimeSpan.FromMinutes(5); // 通知冷卻時間為5分鐘
 
         private static bool isNotificationEnabled = true;  // 是否啟用通知功能
         private static readonly object lockObj = new object();  // 用於保護 NotifyIcon.Text 的訪問
 
         // 用於記錄閾值超過的開始時間
-        private static DateTime cpuThresholdStart = DateTime.MinValue;
-        private static DateTime memoryThresholdStart = DateTime.MinValue;
-        private static DateTime combinedThresholdStart = DateTime.MinValue;
-
+        private static DateTime cpuThresholdStart, memoryThresholdStart, combinedThresholdStart = DateTime.MinValue;
         private static readonly TimeSpan ThresholdDuration = TimeSpan.FromSeconds(5);  // 閾值持續時間為5秒
 
         [STAThread]
@@ -53,7 +47,7 @@ namespace Chinchilla_Running
                 StartAnimation();
 
                 // 啟動性能監控
-                StartUnifiedTimer(); 
+                StartUnifiedTimer();
 
                 // 註冊應用程式退出處理
                 Application.ApplicationExit += OnApplicationExit;
@@ -168,21 +162,57 @@ namespace Chinchilla_Running
         // 加載絨鼠動畫圖示
         private static void LoadHamsterIcons()
         {
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;  // 獲取應用程式的基礎目錄
-            string iconFolderPath = Path.Combine(basePath, "Image", "16x16");  // 圖示資料夾路徑
-
             hamsterIcons = new Icon[34]; // 34 幀(51 - 18 + 1)
-            string defaultIconPath = Path.Combine(iconFolderPath, "ico_pack_16x16_chinchilla (1).ico");  // 預設圖示
 
-            if (!File.Exists(defaultIconPath))
+            // 讀取資料夾中的圖示檔案
+            //string basePath = AppDomain.CurrentDomain.BaseDirectory;  // 獲取應用程式的基礎目錄
+            //string iconFolderPath = Path.Combine(basePath, "Image", "16x16");  // 圖示資料夾路徑
+            
+            //string defaultIconPath = Path.Combine(iconFolderPath, "ico_pack_16x16_chinchilla_1.ico");  // 預設圖示
+
+            //if (!File.Exists(defaultIconPath))
+            //{
+            //    throw new FileNotFoundException("找不到預設圖示檔案", defaultIconPath);
+            //}
+
+            //for (int i = 0; i < 34; i++)
+            //{
+            //    string iconPath = Path.Combine(iconFolderPath, $"ico_pack_16x16_chinchilla_{i + 18}.ico");
+            //    hamsterIcons[i] = File.Exists(iconPath) ? new Icon(iconPath) : new Icon(defaultIconPath);
+            //}
+
+            //讀取嵌入資源的圖示檔案
+            string defaultIconResource = "Chinchilla_Running.Image._16x16.ico_pack_16x16_chinchilla_1.ico";  // 預設圖示的嵌入資源名稱
+
+            // 從內嵌資源中載入預設圖示
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(defaultIconResource))
             {
-                throw new FileNotFoundException("找不到預設圖示檔案", defaultIconPath);
+                if (stream != null)
+                {
+                    hamsterIcons[0] = new Icon(stream); // 將預設圖示存入陣列
+                }
+                else
+                {
+                    throw new FileNotFoundException($"找不到內嵌資源：{defaultIconResource}");
+                }
             }
 
+            // 從內嵌資源中載入其他幀圖示
             for (int i = 0; i < 34; i++)
             {
-                string iconPath = Path.Combine(iconFolderPath, $"ico_pack_16x16_chinchilla ({i + 18}).ico");
-                hamsterIcons[i] = File.Exists(iconPath) ? new Icon(iconPath) : new Icon(defaultIconPath);
+                string iconResource = $"Chinchilla_Running.Image._16x16.ico_pack_16x16_chinchilla_{i + 18}.ico";
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(iconResource))
+                {
+                    if (stream != null)
+                    {
+                        hamsterIcons[i] = new Icon(stream);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"找不到資源：{iconResource}，略過。");
+                        hamsterIcons[i] = hamsterIcons[0]; // 無法找到則使用預設圖示
+                    }
+                }
             }
         }
 
