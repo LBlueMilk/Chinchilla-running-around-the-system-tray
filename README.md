@@ -11,7 +11,7 @@
 
 ## 安裝
 
-1. **下載**：前往 [Releases]([https://github.com/LBlueMilk/Chinchilla-running-around-the-system-tray/tree/main/Chinchilla%20Running/Completed%20Project](https://github.com/LBlueMilk/Chinchilla-running-around-the-system-tray/blob/main/Chinchilla%20Running/Completed%20Project/Chinchilla%20Running.exe)) 頁面，點擊**View raw**，下載最新版本的執行檔案。
+1. **下載**：前往 [Releases]([https://github.com/LBlueMilk/Chinchilla-running-around-the-system-tray/blob/main/Chinchilla%20Running/Completed%20Project/Chinchilla%20Running.exe]) 頁面，點擊**View raw**，下載最新版本的執行檔案。
 2. **執行**：運行下載的執行檔案。
 
 ## 使用方法
